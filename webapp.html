@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Field Goal Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #d0f0c0;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .game-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #2e7d32;
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .field {
+      position: relative;
+      height: 300px;
+      background-color: #388e3c;
+      border: 3px solid #fff;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    /* Goal post container */
+    .goal-post {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 200px;
+    }
+
+    /* Center support post */
+    .support-post {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 10px;
+      height: 70px;
+      background-color: yellow;
+      transform: translateX(-50%);
+    }
+
+    /* Crossbar */
+    .crossbar {
+      position: absolute;
+      bottom: 70px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background-color: yellow;
+    }
+
+    /* Uprights */
+    .upright {
+      position: absolute;
+      width: 10px;
+      height: 80px;
+      background-color: yellow;
+      bottom: 80px;
+    }
+
+    .left-upright {
+      left: 0;
+    }
+
+    .right-upright {
+      right: 0;
+    }
+
+    /* Arrow */
+    .arrow {
+      position: absolute;
+      bottom: 10px;
+      width: 10px;
+      height: 60px;
+      background: red;
+      animation: swing 2s infinite ease-in-out;
+    }
+
+    @keyframes swing {
+      0% { left: 20%; }
+      50% { left: 80%; }
+      100% { left: 20%; }
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #ffeb3b;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    button:hover {
+      background-color: #fdd835;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .game-over-message {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    .score {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>🏈 Field Goal Challenge</h1>
+    <div class="field" id="field">
+      <div class="goal-post">
+        <div class="support-post"></div>
+        <div class="crossbar"></div>
+        <div class="upright left-upright"></div>
+        <div class="upright right-upright"></div>
+      </div>
+      <div class="arrow" id="arrow"></div>
+    </div>
+    <button id="kickBtn">Kick!</button>
+    <button id="playAgainBtn" class="hidden">Play Again</button>
+    <div class="score">Field Goals Made: <span id="score">0</span>/3</div>
+    <div class="game-over-message hidden" id="message"></div>
+  </div>
+
+  <script>
+    const kickBtn = document.getElementById('kickBtn');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const arrow = document.getElementById('arrow');
+    const scoreDisplay = document.getElementById('score');
+    const message = document.getElementById('message');
+    const field = document.getElementById('field');
+
+    let fieldGoalsMade = 0;
+    let isGameOver = false;
+
+    kickBtn.addEventListener('click', () => {
+      if (isGameOver) return;
+
+      const arrowLeft = parseFloat(getComputedStyle(arrow).left);
+      const fieldWidth = field.clientWidth;
+      const arrowPercent = (arrowLeft / fieldWidth) * 100;
+
+      // Uprights are about 40% to 60% of field width
+      if (arrowPercent >= 45 && arrowPercent <= 55) {
+        fieldGoalsMade++;
+        scoreDisplay.textContent = fieldGoalsMade;
+        if (fieldGoalsMade === 3) {
+          endGame(true);
+        }
+      } else {
+        endGame(false);
+      }
+    });
+
+    playAgainBtn.addEventListener('click', () => {
+      fieldGoalsMade = 0;
+      isGameOver = false;
+      scoreDisplay.textContent = '0';
+      message.classList.add('hidden');
+      playAgainBtn.classList.add('hidden');
+      kickBtn.classList.remove('hidden');
+      arrow.style.animationPlayState = 'running';
+    });
+
+    function endGame(won) {
+      isGameOver = true;
+      message.textContent = won ? '🎉 You Win! 3 Field Goals Made!' : '❌ Missed! Game Over.';
+      message.classList.remove('hidden');
+      playAgainBtn.classList.remove('hidden');
+      kickBtn.classList.add('hidden');
+      arrow.style.animationPlayState = 'paused';
+    }
+  </script>
+  <br><br>
+  <a href="../scratch.html">Scratch Page</a>
+</body>
+</html>
